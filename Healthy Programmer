@@ -1,80 +1,61 @@
-from datetime import date
-import time
 from pygame import mixer
+from datetime import date
+from time import time,strftime
 
-
-def mujic(file , start1, stopper):
-    music = mixer.music
+def mujic(file , stopper, start_h = 0):
     mixer.init()
+    music = mixer.music
     music.load(file)
-    music.play(start = start1)
+    music.play(start = start_h)
     while True:
-        stop = input(f'Type \"{stopper}\" when completed the task')
+        stop = input(f"Enter {stopper} when done>>>>>>>")
         if stop == stopper:
             music.stop()
             break
-def log(msg , tame_n):
-    with open("Record.txt" , "a") as f:
-        f.write(f"[{tame_n}] {msg}\n")
 
-
-def eye():
-    tame_n = time.strftime("%H:%M:%S")
-    mujic('eyes.mp3' , 19, "EyDone" )
-    f.write(f"[{tame_n}] Eyes Exercise Done\n")
-
-
-def physical():
-    tame_n = time.strftime("%H:%M:%S")
-    mujic('physical.mp3' , 0, "ExDone" )
-    f.write(f"[{tame_n}]  Done\n")
-
-def water():
-    tame_n = time.strftime("%H:%M:%S")
-    mujic('water.mp3' , 14, "Drank" )
-    f.write(f"[{tame_n}] Drank Water\n")
-
+def log(tame_n, msg):
+    with open("Record new new.txt" , "a") as f:
+        f.write("[tame_n] {msg}\n")
 if __name__ == '__main__':
-    tame = time.strftime("%H:%M:%S")
-    today = date.today()
-    d = today.strftime("%B %d, %Y")
 
-    f = open('Record.txt' , 'a')
-    f.write(f"{d}\n")
+    eyes_t = time()
+    water_t = time()
+    physical_t = time()
+
+    eyesecs = 30*60
+    watersecs = 35*60
+    physicalsecs = 45*60
+
+    tame = strftime("%H:%M:%S")
 
     while tame >= '17:00:00' and tame <= '09:00:00':
-        tame = time.strftime("%H:%M:%S")
+        tame = strftime("%H:%M:%S")
 
-    t1 = time.time()
-    time.sleep(5)
-    
+    today = date.today()
+
+    d = today.strftime("%B %d, %Y")
+
+    with open("Record new new.txt", "a") as f:
+        f.write(f"{d}\n")
+
     while tame >= '09:00:00' and tame <= '17:00:00':
-        tame = time.strftime("%H:%M:%S")
-        t2 = time.time()
-        diff = round(t2 - t1) / 60
 
-        if diff % 45 == 0 and diff % 30 == 0:
-            eye()
-            time.sleep(2)
-            physical()
+        tame = strftime("%H:%M:%S")
 
-        elif diff % 35 == 0 and diff % 30 == 0:
-            water()
-            time.sleep(2)
-            eye()
+        if time() - eyes_t > eyesecs:
+            print("Time For Eyes Workout")
+            mujic('eyes.mp3', "EyDone", 19)
+            log(tame, 'Eyes Exercise Done')
+            eyes_t = time()
 
-        elif diff % 35 == 0 and diff % 45 == 0:
-            physical()
-            time.sleep(2)
-            water()
+        elif time() - water_t > watersecs:
+            print("Time to drink water")
+            mujic("water.mp3", "Drank", 14)
+            log(tame, "Water Drank")
+            water_t = time()
 
-        elif diff % 35 == 0:
-            water()
-
-        elif diff % 30 == 0:
-            eye()
-
-        elif diff % 45 == 0:
-            physical()
-
-    f.close()
+        elif time() - physical_t > physicalsecs:
+            print("Time to do some physical exercise")
+            mujic("physical.mp3", 'ExDone')
+            log(tame, "Physical Exercise Done")
+            physical_t = time()
